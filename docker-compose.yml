@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  tests:
+    build:
+      context: ./tests
+    volumes:
+      - ./tests/src:/usr/src/app
+    depends_on:
+       - selenium
+
+  selenium:
+    image: selenium/standalone-chrome-debug
+    restart: always
+    ports:
+       - 4444:4444
+       - 5900:5900
+    logging:
+      driver: "none"
+    environment:
+      - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "http://localhost:4444/wd/hub"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  
